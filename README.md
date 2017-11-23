@@ -1,0 +1,3 @@
+# README #
+
+Translate manager server
