@@ -7,9 +7,12 @@ from rest_framework.permissions import IsAuthenticated
 from translate_manager.models import Project
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
+    language_from = serializers.StringRelatedField()
+    language_to = serializers.StringRelatedField()
+
     class Meta:
         model = Project
-        fields = ( 'id', 'url', 'shortname', 'state' )
+        fields = ( 'id', 'url', 'shortname', 'state', 'language_from', 'language_to', )
 
 class MyProjectViewSet(viewsets.ReadOnlyModelViewSet):
     model = Project
