@@ -13,8 +13,8 @@ admin.site.register(Language, LanguageAdmin)
 
 class ProjectAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,               {'fields': ['shortname' ]}),
+        (None,               {'fields': ['shortname', 'state', 'language_from', 'language_to', 'description' ]}),
     ]
-    search_fields = ['shortname']
+    search_fields = ['shortname', 'state']
 
 admin.site.register(Project, ProjectAdmin)
