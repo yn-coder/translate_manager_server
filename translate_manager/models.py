@@ -1,7 +1,37 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.utils import timezone
+
 # Create your models here.
+
+from .messages import *
+
+class Notification(models.Model):
+    sender_user = models.ForeignKey(User, related_name = 'sender_user', blank=True, null = True )
+    created_at = models.DateTimeField(default=timezone.now)
+    reciever_user = models.ForeignKey(User, related_name = 'reciever_user')
+    readed_at = models.DateTimeField( blank=True, null = True )
+    msg_txt = models.CharField(max_length=255, blank=False)
+    msg_url = models.URLField(max_length=75, blank=True, null = True)
+
+    def decode_msg( self ):
+        return decode_json2msg( self.msg_txt )
+
+    def get_unreaded( self ):
+        return self.readed_at is None
+
+    def mark_readed(self):
+        if self.readed_at is None:
+            self.readed_at = timezone.now()
+            self.save()
+        # иначе - ничего не делать
+
+    def get_absolute_url(self):
+        return "/notification/%i/" % self.id
+
+def GetUserNoticationsQ( arg_user, arg_new ):
+    return Notification.objects.filter(reciever_user = arg_user, readed_at__isnull=arg_new).order_by('-created_at')
 
 class Language(models.Model):
     shortname = models.CharField(max_length=255, blank=True, null=True)
@@ -37,6 +67,10 @@ class Project(models.Model):
 
     def __str__(self):
         return self.shortname
+    def get_absolute_url(self):
+        return "/project/project/%i/" % self.id
+
+from .notification_helper import Send_Notification
 
 class Project_Assignments(models.Model):
     project = models.ForeignKey( Project, blank=False, null=False )
@@ -44,3 +78,17 @@ class Project_Assignments(models.Model):
     invited_at = models.DateTimeField( blank=True, null=True )
     accepted_at = models.DateTimeField( blank=True, null=True )
     dismissed_at = models.DateTimeField( blank=True, null=True )
+
+    class Meta:
+        unique_together = ("project", "assigned_user")
+
+    def save(self, *args, **kwargs):
+        if self.invited_at is None:
+            self.invited_at = timezone.now()
+        super(Project_Assignments, self).save(*args, **kwargs)
+        if ( self.accepted_at is None ): # send invite
+            message_str = project_msg2json_str( MSG_NOTIFY_TYPE_ASK_ACCEPT_ID, arg_project_name = self.project.shortname )
+            Send_Notification( None, self.assigned_user, message_str, self.project.get_absolute_url() )
+
+def GetMemberedProjectList( arg_user ): # return Project dataset
+    return Project.objects.filter( project_assignments__assigned_user=arg_user)

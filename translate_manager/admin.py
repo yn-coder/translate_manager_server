@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Language, Project, Project_Assignments
+from .models import Language, Project, Project_Assignments, Notification
 
 class LanguageAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -24,3 +24,11 @@ class ProjectAdmin(admin.ModelAdmin):
     search_fields = ['shortname', 'state']
 
 admin.site.register(Project, ProjectAdmin)
+
+class NotificationAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['reciever_user', 'msg_txt', 'msg_url', 'created_at', 'readed_at', 'sender_user' ]}),
+    ]
+    search_fields = ['reciever_user', 'msg_txt']
+
+admin.site.register(Notification, NotificationAdmin)

@@ -3,8 +3,30 @@ from rest_framework.response import Response
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import authentication, permissions
 
-from translate_manager.models import Project
+from translate_manager.models import Project, GetMemberedProjectList, Notification, GetUserNoticationsQ
+
+class NotificationSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Notification
+        # 'sender_user', 'reciever_user'
+        fields = ( 'id', 'url',  'created_at', 'readed_at', 'msg_txt', 'msg_url', )
+
+class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
+    model = Notification
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+
+    authentication_classes = (authentication.SessionAuthentication, authentication.BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        u  = self.request.user
+        if u.is_authenticated:
+            return GetUserNoticationsQ( u, True )
+        else:
+            return None
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     language_from = serializers.StringRelatedField()
@@ -14,15 +36,20 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
         model = Project
         fields = ( 'id', 'url', 'shortname', 'state', 'language_from', 'language_to', )
 
-class MyProjectViewSet(viewsets.ReadOnlyModelViewSet):
+class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     model = Project
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
-    #def get_queryset(self):
-    #    u  = self.request.user
-    #    return GetMemberedProjectList( u )
+    authentication_classes = (authentication.SessionAuthentication, authentication.BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        u  = self.request.user
+        if u.is_superuser:
+            return Project.objects.all()
+        else:
+            return GetMemberedProjectList( u )
 
 # версия API
 CURRENT_API_VERSION = 1
