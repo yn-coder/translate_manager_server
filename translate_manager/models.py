@@ -25,7 +25,7 @@ PROJECT_STATE_LIST_CHOICES = (
   ( PROJECT_STATE_DONE, 'DONE' ),
   ( PROJECT_STATE_ARCHIVE, 'ARCHIVE' ),
   ( PROJECT_STATE_CANCEL, 'CANCEL' ),
-  
+
      )
 
 class Project(models.Model):
@@ -34,7 +34,7 @@ class Project(models.Model):
     state = models.PositiveSmallIntegerField( blank=False, null=False, default = PROJECT_STATE_DRAFT, choices = PROJECT_STATE_LIST_CHOICES )
     language_from = models.ForeignKey( Language, blank=True, null=True, related_name = "language_from" )
     language_to = models.ForeignKey( Language, blank=True, null=True, related_name = "language_to" )
-    
+
     def __str__(self):
         return self.shortname
 
@@ -43,3 +43,4 @@ class Project_Assignments(models.Model):
     assigned_user = models.ForeignKey(User, blank=False, null=False )
     invited_at = models.DateTimeField( blank=True, null=True )
     accepted_at = models.DateTimeField( blank=True, null=True )
+    dismissed_at = models.DateTimeField( blank=True, null=True )
