@@ -1,11 +1,25 @@
 from rest_framework import routers, serializers, viewsets
 from rest_framework.response import Response
 
+from django.contrib.auth.models import User
+
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import authentication, permissions
 
 from translate_manager.models import Project, GetMemberedProjectList, Notification, GetUserNoticationsQ
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ('url', 'username', 'email', 'is_staff')
+
+# ViewSets define the view behavior.
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    authentication_classes = (authentication.SessionAuthentication, authentication.BasicAuthentication)
+    permission_classes = (IsAuthenticated, IsAdminUser, )
 
 class NotificationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

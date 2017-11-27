@@ -19,12 +19,13 @@ from django.views.generic import TemplateView
 
 from rest_framework import routers, serializers, viewsets
 
-from api.views import ProjectViewSet, ProjectViewSet, NotificationViewSet, get_api_ver
+from api.views import UserViewSet, ProjectViewSet, ProjectViewSet, NotificationViewSet, get_api_ver
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'projects', ProjectViewSet)
 router.register(r'my_notifications', NotificationViewSet)
+router.register(r'users', UserViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
