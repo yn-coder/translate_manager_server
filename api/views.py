@@ -48,7 +48,7 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Project
-        fields = ( 'id', 'url', 'shortname', 'state', 'language_from', 'language_to', )
+        fields = ( 'id', 'url', 'shortname', 'description', 'state', 'language_from', 'language_to', )
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     model = Project
