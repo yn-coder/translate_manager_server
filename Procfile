@@ -1,0 +1,1 @@
+web: gunicorn translate_manager_server.wsgi
