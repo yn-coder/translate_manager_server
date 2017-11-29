@@ -33,7 +33,9 @@ class Notification(models.Model):
 def GetUserNoticationsQ( arg_user, arg_new ):
     return Notification.objects.filter(reciever_user = arg_user, readed_at__isnull=arg_new).order_by('-created_at')
 
-class Language(models.Model):
+from commons.models import BaseStampedModel
+    
+class Language(BaseStampedModel):
     shortname = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
@@ -58,7 +60,7 @@ PROJECT_STATE_LIST_CHOICES = (
 
      )
 
-class Project(models.Model):
+class Project(BaseStampedModel):
     shortname = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     state = models.PositiveSmallIntegerField( blank=False, null=False, default = PROJECT_STATE_DRAFT, choices = PROJECT_STATE_LIST_CHOICES )
@@ -72,7 +74,7 @@ class Project(models.Model):
 
 from .notification_helper import Send_Notification
 
-class Project_Assignments(models.Model):
+class Project_Assignments(BaseStampedModel):
     project = models.ForeignKey( Project, blank=False, null=False )
     assigned_user = models.ForeignKey(User, blank=False, null=False )
     invited_at = models.DateTimeField( blank=True, null=True )

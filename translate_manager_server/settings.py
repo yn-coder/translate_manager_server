@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
 
+    'commons',
     'translate_manager',
     'api',
 ]
