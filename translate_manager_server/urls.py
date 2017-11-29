@@ -19,7 +19,7 @@ from django.views.generic import TemplateView
 
 from rest_framework import routers, serializers, viewsets
 
-from api.views import UserViewSet, ProjectViewSet, ProjectViewSet, NotificationViewSet, get_api_ver
+from api.views import UserViewSet, ProjectViewSet, ProjectViewSet, NotificationViewSet, get_api_ver, get_my_profile
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
@@ -30,7 +30,8 @@ router.register(r'users', UserViewSet)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r"^$", TemplateView.as_view(template_name="homepage.html"), name="home"),
-    url(r'^webapi/', include(router.urls)),    
+    url(r'^webapi/', include(router.urls)),
     url(r'^webapi/get_api_ver/$', get_api_ver),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))    
+    url(r'^webapi/get_my_profile/$', get_my_profile),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

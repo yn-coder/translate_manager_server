@@ -12,7 +12,7 @@ from translate_manager.models import Project, GetMemberedProjectList, Notificati
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'is_staff')
+        fields = ( 'id', 'url', 'username', 'email', 'is_staff')
 
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -77,6 +77,5 @@ def get_api_ver(request):
 @permission_classes((IsAuthenticated, ))
 def get_my_profile(request):
     u  = request.user
-    p = request.user.get_profile()
 
-    return Response(  {"username": u.username, "email" : u.email , "nickname" : p.name })
+    return Response(  {"username": u.username, "email" : u.email, "is_staff" : u.is_staff })
