@@ -30,9 +30,20 @@ router.register(r'users', UserViewSet)
 from django.conf import settings
 from django.conf.urls.static import static
 
+from translate_manager.models import Project
+
+class HomePageView(TemplateView):
+
+    template_name = "homepage.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(HomePageView, self).get_context_data(**kwargs)
+        context['projects'] = Project.objects.all().order_by('-modified_at')
+        return context
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r"^$", TemplateView.as_view(template_name="homepage.html"), name="home"),
+    url(r"^$", HomePageView.as_view(), name="home"),
     url(r'^webapi/', include(router.urls)),
     url(r'^webapi/get_api_ver/$', get_api_ver),
     url(r'^webapi/get_my_profile/$', get_my_profile),

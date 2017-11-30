@@ -14,6 +14,29 @@
     <a href="admin" class="paper-btn">Admin</a>
     <a href="webapi" class="paper-btn">webapi</a>
     <h2>Windows client</h2>
+    <h2>Project list</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Created</th>
+      <th>Modified</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in projects %}
+    <tr>
+    <td>{{p.id}}</td>
+    <td>{{p}}</td>
+    <td>{{p.created_at}}</td>
+    <td>{{p.modified_at}}</td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>
+
   </div>
 </body>
 </html>

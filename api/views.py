@@ -49,14 +49,18 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Project
         fields = ( 'id', 'url', 'shortname', 'description', 'state', 'language_from', 'language_to', 'GUID', 'created_at', 'modified_at' )
+        read_only_fields = ('GUID', 'created_at', 'modified_at')
 
-class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
+class ProjectViewSet(viewsets.ModelViewSet):
     model = Project
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
     authentication_classes = (authentication.SessionAuthentication, authentication.BasicAuthentication)
     permission_classes = (IsAuthenticated,)
+
+#    def perform_create(self, serializer):
+#        serializer.save()
 
     def get_queryset(self):
         u  = self.request.user
