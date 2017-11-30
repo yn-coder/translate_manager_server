@@ -27,6 +27,9 @@ router.register(r'projects', ProjectViewSet)
 router.register(r'my_notifications', NotificationViewSet)
 router.register(r'users', UserViewSet)
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r"^$", TemplateView.as_view(template_name="homepage.html"), name="home"),
@@ -34,4 +37,4 @@ urlpatterns = [
     url(r'^webapi/get_api_ver/$', get_api_ver),
     url(r'^webapi/get_my_profile/$', get_my_profile),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
