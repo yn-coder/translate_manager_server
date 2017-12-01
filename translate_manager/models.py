@@ -34,7 +34,7 @@ def GetUserNoticationsQ( arg_user, arg_new ):
     return Notification.objects.filter(reciever_user = arg_user, readed_at__isnull=arg_new).order_by('-created_at')
 
 from commons.models import BaseStampedModel
-    
+
 class Language(BaseStampedModel):
     shortname = models.CharField(max_length=255, blank=True, null=True)
 
@@ -68,7 +68,17 @@ class Project(BaseStampedModel):
     language_to = models.ForeignKey( Language, blank=True, null=True, related_name = "language_to" )
 
     def __str__(self):
-        return self.shortname
+        if self.shortname:
+            return self.shortname
+        else:
+            return ""
+
+    def state_caption(self):
+        if self.state:
+            return PROJECT_STATE_LIST_CHOICES[self.state][1]
+        else:
+            return PROJECT_STATE_LIST_CHOICES[PROJECT_STATE_DRAFT][1]
+        
     def get_absolute_url(self):
         return "/project/project/%i/" % self.id
 
