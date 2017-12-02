@@ -78,13 +78,13 @@ class Project(BaseStampedModel):
             return PROJECT_STATE_LIST_CHOICES[self.state][1]
         else:
             return PROJECT_STATE_LIST_CHOICES[PROJECT_STATE_DRAFT][1]
-        
+
     def get_absolute_url(self):
         return "/project/project/%i/" % self.id
 
 from .notification_helper import Send_Notification
 
-class Project_Assignments(BaseStampedModel):
+class Assignment(BaseStampedModel):
     project = models.ForeignKey( Project, blank=False, null=False )
     assigned_user = models.ForeignKey(User, blank=False, null=False )
     invited_at = models.DateTimeField( blank=True, null=True )
@@ -97,10 +97,10 @@ class Project_Assignments(BaseStampedModel):
     def save(self, *args, **kwargs):
         if self.invited_at is None:
             self.invited_at = timezone.now()
-        super(Project_Assignments, self).save(*args, **kwargs)
+        super(Assignment, self).save(*args, **kwargs)
         if ( self.accepted_at is None ): # send invite
             message_str = project_msg2json_str( MSG_NOTIFY_TYPE_ASK_ACCEPT_ID, arg_project_name = self.project.shortname )
             Send_Notification( None, self.assigned_user, message_str, self.project.get_absolute_url() )
 
 def GetMemberedProjectList( arg_user ): # return Project dataset
-    return Project.objects.filter( project_assignments__assigned_user=arg_user)
+    return Project.objects.filter( assignment__assigned_user=arg_user)
