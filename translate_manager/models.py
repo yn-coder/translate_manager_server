@@ -85,7 +85,7 @@ class Project(BaseStampedModel):
 from .notification_helper import Send_Notification
 
 class Assignment(BaseStampedModel):
-    project = models.ForeignKey( Project, blank=False, null=False )
+    project = models.ForeignKey( Project, blank=False, null=False, related_name = 'assignments' )
     assigned_user = models.ForeignKey(User, blank=False, null=False )
     invited_at = models.DateTimeField( blank=True, null=True )
     accepted_at = models.DateTimeField( blank=True, null=True )
