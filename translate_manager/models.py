@@ -94,6 +94,9 @@ class Assignment(BaseStampedModel):
     class Meta:
         unique_together = ("project", "assigned_user")
 
+    def __str__(self):
+        return str(self.assigned_user)# + ' ' + str(self.project)
+
     def save(self, *args, **kwargs):
         if self.invited_at is None:
             self.invited_at = timezone.now()

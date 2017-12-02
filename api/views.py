@@ -45,10 +45,13 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     language_from = serializers.StringRelatedField()
     language_to = serializers.StringRelatedField()
+    assignments = serializers.StringRelatedField(many=True )
+    #assignments = serializers.PrimaryKeyRelatedField(many=True, read_only=False, queryset = User.objects.all() )
+    #assignments = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name = 'Assignment-detail' )
 
     class Meta:
         model = Project
-        fields = ( 'id', 'url', 'shortname', 'description', 'state', 'language_from', 'language_to', 'GUID', 'created_at', 'modified_at' )
+        fields = ( 'id', 'url', 'shortname', 'description', 'state', 'language_from', 'language_to', 'GUID', 'created_at', 'modified_at', 'assignments' )
         read_only_fields = ('GUID', 'created_at', 'modified_at')
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -70,7 +73,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             return GetMemberedProjectList( u )
 
 # версия API
-CURRENT_API_VERSION = 1
+CURRENT_API_VERSION = 2
 
 @api_view()
 @permission_classes((IsAuthenticated, ))
