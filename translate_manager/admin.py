@@ -13,6 +13,10 @@ admin.site.register(Language, LanguageAdmin)
 
 class Project_Assignments_Inline(admin.TabularInline):
     model = Assignment
+    fieldsets = [
+        (None,               {'fields': ['assigned_user', 'invited_at', 'accepted_at', 'dismissed_at' ]}),
+    ]
+    readonly_fields = ( 'invited_at', 'accepted_at', 'dismissed_at', )
 
 class ProjectAdmin(admin.ModelAdmin):
     inlines = [
