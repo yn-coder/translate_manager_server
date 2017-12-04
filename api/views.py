@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import authentication, permissions
 
-from translate_manager.models import Project, GetMemberedProjectList, Notification, GetUserNoticationsQ
+from translate_manager.models import Project, GetMemberedProjectList, Notification, GetUserNoticationsQ, Assignment
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -42,17 +42,38 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
         else:
             return None
 
+class AssignmentSerializer(serializers.ModelSerializer):
+    assigned_user = serializers.StringRelatedField()
+    #assigned_user = serializers.PrimaryKeyRelatedField(many=True, read_only=True ) #, queryset = User.objects.all()
+    
+    class Meta:
+        model = Assignment
+        fields = ( 'id', 'url', 'project', 'assigned_user', 'assigned_user_id', 
+        'invited_at', 'accepted_at', 'dismissed_at' )
+        read_only_fields = ( 'invited_at', 'accepted_at', 'dismissed_at' )
+        
+class AssignmentViewSet(viewsets.ModelViewSet):
+    model = Assignment
+    queryset = Assignment.objects.all()
+    serializer_class = AssignmentSerializer
+
+    authentication_classes = (authentication.SessionAuthentication, authentication.BasicAuthentication)
+    permission_classes = (IsAuthenticated,)            
+        
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     language_from = serializers.StringRelatedField()
     language_to = serializers.StringRelatedField()
-    assignments = serializers.StringRelatedField(many=True )
+    #assignments = serializers.StringRelatedField(many=True )
     #assignments = serializers.PrimaryKeyRelatedField(many=True, read_only=False, queryset = User.objects.all() )
+    assignments = AssignmentSerializer( many=True, read_only=True )
     #assignments = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name = 'Assignment-detail' )
 
     class Meta:
         model = Project
-        fields = ( 'id', 'url', 'shortname', 'description', 'state', 'language_from', 'language_to', 'GUID', 'created_at', 'modified_at', 'assignments' )
-        read_only_fields = ('GUID', 'created_at', 'modified_at')
+        fields = ( 'id', 'url', 'shortname', 'description', 'state', 'language_from', 'language_to', 'GUID', 'created_at', 'modified_at',
+        #'assignments',
+        'assignments' )
+        read_only_fields = ('GUID', 'created_at', 'modified_at' )
 
 class ProjectViewSet(viewsets.ModelViewSet):
     model = Project
@@ -73,7 +94,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             return GetMemberedProjectList( u )
 
 # версия API
-CURRENT_API_VERSION = 2
+CURRENT_API_VERSION = 3
 
 @api_view()
 @permission_classes((IsAuthenticated, ))
