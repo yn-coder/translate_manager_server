@@ -45,21 +45,21 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
 class AssignmentSerializer(serializers.ModelSerializer):
     assigned_user = serializers.StringRelatedField()
     #assigned_user = serializers.PrimaryKeyRelatedField(many=True, read_only=True ) #, queryset = User.objects.all()
-    
+
     class Meta:
         model = Assignment
-        fields = ( 'id', 'url', 'project', 'assigned_user', 'assigned_user_id', 
+        fields = ( 'id', 'url', 'project', 'assigned_user', 'assigned_user_id',
         'invited_at', 'accepted_at', 'dismissed_at' )
         read_only_fields = ( 'invited_at', 'accepted_at', 'dismissed_at' )
-        
+
 class AssignmentViewSet(viewsets.ModelViewSet):
     model = Assignment
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
 
     authentication_classes = (authentication.SessionAuthentication, authentication.BasicAuthentication)
-    permission_classes = (IsAuthenticated,)            
-        
+    permission_classes = (IsAuthenticated,)
+
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     language_from = serializers.StringRelatedField()
     language_to = serializers.StringRelatedField()
@@ -107,3 +107,20 @@ def get_my_profile(request):
     u  = request.user
 
     return Response(  {"username": u.username, "email" : u.email, "is_staff" : u.is_staff })
+
+@api_view()
+@permission_classes((IsAuthenticated, ))
+def add_user2project(request, user_id, project_id):
+    if request.user.is_staff:
+        try:
+            project = Project.objects.get( id = project_id )
+            user = User.objects.get( id = user_id )
+            assign = Assignment();
+            assign.project=project
+            assign.assigned_user = user
+            assign.save()
+            return Response( {"result": "ok", 'user' : str(user ), 'project': str( project ) })
+        except:
+            return Response( {"result":"fail"}  )
+    else:
+        return Response( {"result":"not staff"}  )
