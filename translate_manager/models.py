@@ -18,6 +18,9 @@ class Notification(models.Model):
     def decode_msg( self ):
         return decode_json2msg( self.msg_txt )
 
+    def get_project_id( self ):
+        return get_project_id_from_msg( self.msg_txt )
+
     def get_unreaded( self ):
         return self.readed_at is None
 
@@ -102,7 +105,7 @@ class Assignment(BaseStampedModel):
             self.invited_at = timezone.now()
         super(Assignment, self).save(*args, **kwargs)
         if ( self.accepted_at is None ): # send invite
-            message_str = project_msg2json_str( MSG_NOTIFY_TYPE_ASK_ACCEPT_ID, arg_project_name = self.project.shortname )
+            message_str = project_msg2json_str( MSG_NOTIFY_TYPE_ASK_ACCEPT_ID, arg_project_name = self.project.shortname, arg_project_id = self.project.id )
             Send_Notification( None, self.assigned_user, message_str, self.project.get_absolute_url() )
 
 def GetMemberedProjectList( arg_user ): # return Project dataset

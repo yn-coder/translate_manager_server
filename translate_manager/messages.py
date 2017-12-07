@@ -60,3 +60,10 @@ def decode_json2msg( arg_str ):
                     # return MSGS[key_type].format(j_obj[MSG_NOTIFY_JSON_KEY_TASK_PROJECT_NAME],j_obj[MSG_NOTIFY_JSON_KEY_PROJECT_NAME])
     except:
         return None
+
+def get_project_id_from_msg( arg_str ): # return project id or None
+    try:
+        j_obj = json.loads( arg_str )
+        return int(j_obj[MSG_NOTIFY_JSON_KEY_PROJECT_ID])
+    except:
+        return None
