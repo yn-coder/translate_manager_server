@@ -25,12 +25,14 @@ MSG_NOTIFY_TYPE_PROJECT_CHANGED_ID : "Changes in the '{0}' project.",
 
 MSG_NOTIFY_JSON_KEY_TYPE = 'msg_type'
 MSG_NOTIFY_JSON_KEY_PROJECT_NAME = 'project_name'
+MSG_NOTIFY_JSON_KEY_PROJECT_ID = 'project_id'
 MSG_NOTIFY_JSON_KEY_MILESTONE_PROJECT_NAME = 'milestone_name'
 MSG_NOTIFY_JSON_KEY_TASK_PROJECT_NAME = 'task_name'
 
-def project_msg2json_str( arg_msg_type, arg_project_name = None, arg_milestone_name = None, arg_task_name = None ):
+def project_msg2json_str( arg_msg_type, arg_project_id = None, arg_project_name = None, arg_milestone_name = None, arg_task_name = None ):
     d = { MSG_NOTIFY_JSON_KEY_TYPE : arg_msg_type }
-    if arg_project_name:
+    if arg_project_id and arg_project_name:
+        d[MSG_NOTIFY_JSON_KEY_PROJECT_ID] = arg_project_id
         d[MSG_NOTIFY_JSON_KEY_PROJECT_NAME] = arg_project_name
     if arg_milestone_name:
         d[MSG_NOTIFY_JSON_KEY_MILESTONE_PROJECT_NAME] = arg_milestone_name
