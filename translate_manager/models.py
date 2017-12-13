@@ -82,24 +82,34 @@ class Project(BaseStampedModel):
         else:
             return PROJECT_STATE_LIST_CHOICES[PROJECT_STATE_DRAFT][1]
 
+    def Get_Members( self ):
+        q = User.objects.filter( assigned_user__project = self)
+        return q
+
     def get_absolute_url(self):
         return "/project/project/%i/" % self.id
+
+from .notification_helper import Send_Notification
 
 class DocFile(models.Model):
     bytes = models.TextField()
     filename = models.CharField(max_length=255)
     mimetype = models.CharField(max_length=50)
 
-class Doc(models.Model):
+class Doc(BaseStampedModel):
     name = models.CharField(max_length=100)
     doc = models.FileField(upload_to='translate_manager.DocFile/bytes/filename/mimetype', blank=True, null=True)
     project = models.ForeignKey( Project, blank=False, null=False, related_name = 'project_docs' )
 
-from .notification_helper import Send_Notification
+    def save(self, *args, **kwargs):
+        super(Doc, self).save(*args, **kwargs)
+        message_str = project_msg2json_str( MSG_NOTIFY_PROJECT_DOC_CAHNGED_ID, arg_project_name = self.project.shortname, arg_project_id = self.project.id )
+        for u in self.project.Get_Members():
+            Send_Notification( None, u, message_str, self.project.get_absolute_url() )
 
 class Assignment(BaseStampedModel):
     project = models.ForeignKey( Project, blank=False, null=False, related_name = 'assignments' )
-    assigned_user = models.ForeignKey(User, blank=False, null=False )
+    assigned_user = models.ForeignKey(User, blank=False, null=False, related_name = 'assigned_user' )
     invited_at = models.DateTimeField( blank=True, null=True )
     accepted_at = models.DateTimeField( blank=True, null=True )
     dismissed_at = models.DateTimeField( blank=True, null=True )
