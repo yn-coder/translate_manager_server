@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import authentication, permissions
 
-from translate_manager.models import Project, GetMemberedProjectList, Notification, GetUserNoticationsQ, Assignment
+from translate_manager.models import Project, GetMemberedProjectList, Notification, GetUserNoticationsQ, Assignment, Doc
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -60,6 +60,17 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     authentication_classes = (authentication.SessionAuthentication, authentication.BasicAuthentication)
     permission_classes = (IsAuthenticated,)
 
+class DocSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Doc
+        fields = ( 'id', 'url', 'name', 'doc', 'project' )
+
+class DocViewSet(viewsets.ModelViewSet):
+    queryset = Doc.objects.all()
+    serializer_class = DocSerializer
+    authentication_classes = (authentication.SessionAuthentication, authentication.BasicAuthentication)
+    permission_classes = (IsAuthenticated, IsAdminUser, )
+
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     language_from = serializers.StringRelatedField()
     language_to = serializers.StringRelatedField()
@@ -67,12 +78,11 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     #assignments = serializers.PrimaryKeyRelatedField(many=True, read_only=False, queryset = User.objects.all() )
     assignments = AssignmentSerializer( many=True, read_only=True )
     #assignments = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name = 'Assignment-detail' )
+    project_docs = DocSerializer( many=True, read_only=True )
 
     class Meta:
         model = Project
-        fields = ( 'id', 'url', 'shortname', 'description', 'state', 'language_from', 'language_to', 'GUID', 'created_at', 'modified_at',
-        #'assignments',
-        'assignments' )
+        fields = ( 'id', 'url', 'shortname', 'description', 'state', 'language_from', 'language_to', 'GUID', 'created_at', 'modified_at', 'assignments', 'project_docs' )
         read_only_fields = ('GUID', 'created_at', 'modified_at' )
 
 class ProjectViewSet(viewsets.ModelViewSet):

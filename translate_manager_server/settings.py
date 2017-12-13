@@ -39,6 +39,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
 
+    'db_file_storage',
+
     'commons',
     'translate_manager',
     'api',
@@ -141,3 +143,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
+
+DEFAULT_FILE_STORAGE = 'db_file_storage.storage.DatabaseFileStorage'

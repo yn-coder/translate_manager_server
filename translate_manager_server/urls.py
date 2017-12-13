@@ -19,10 +19,11 @@ from django.views.generic import TemplateView
 
 from rest_framework import routers, serializers, viewsets
 
-from api.views import UserViewSet, ProjectViewSet, ProjectViewSet, NotificationViewSet, AssignmentViewSet, get_api_ver, get_my_profile, add_user2project
+from api.views import UserViewSet, ProjectViewSet, ProjectViewSet, NotificationViewSet, AssignmentViewSet, get_api_ver, get_my_profile, add_user2project, DocViewSet
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
+router.register(r'doc', DocViewSet)
 router.register(r'projects', ProjectViewSet)
 router.register(r'my_notifications', NotificationViewSet)
 router.register(r'users', UserViewSet)
@@ -48,6 +49,10 @@ urlpatterns = [
     url(r'^webapi/', include(router.urls)),
     url(r'^webapi/get_api_ver/$', get_api_ver),
     url(r'^webapi/get_my_profile/$', get_my_profile),
-    url(r'^webapi/add_user2project/(?P<user_id>\w+)/(?P<project_id>\w+)/$', add_user2project),    
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^webapi/add_user2project/(?P<user_id>\w+)/(?P<project_id>\w+)/$', add_user2project),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    url(r'^files/', include('db_file_storage.urls')),
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

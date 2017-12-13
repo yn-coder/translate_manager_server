@@ -85,6 +85,16 @@ class Project(BaseStampedModel):
     def get_absolute_url(self):
         return "/project/project/%i/" % self.id
 
+class DocFile(models.Model):
+    bytes = models.TextField()
+    filename = models.CharField(max_length=255)
+    mimetype = models.CharField(max_length=50)
+
+class Doc(models.Model):
+    name = models.CharField(max_length=100)
+    doc = models.FileField(upload_to='translate_manager.DocFile/bytes/filename/mimetype', blank=True, null=True)
+    project = models.ForeignKey( Project, blank=False, null=False, related_name = 'project_docs' )
+
 from .notification_helper import Send_Notification
 
 class Assignment(BaseStampedModel):
