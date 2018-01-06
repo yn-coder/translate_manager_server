@@ -14,7 +14,7 @@ admin.site.register(Language, LanguageAdmin)
 class Doc_Assignments_Inline(admin.TabularInline):
     model = Doc
     fieldsets = [
-        (None,               {'fields': ['name', 'doc',  ]}),
+        (None,               {'fields': ['name', 'doc', ]}),
     ]
     readonly_fields = ( 'name', 'doc',  )
 
@@ -56,7 +56,7 @@ class DocAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,               {'fields': ['project', 'name', 'doc' ]}),
     ]
-    list_display =  ('name', 'project')
+    list_display =  ('name', 'project', 'doc' )
     search_fields = ['name', 'project']
 
 admin.site.register(Doc, DocAdmin)
