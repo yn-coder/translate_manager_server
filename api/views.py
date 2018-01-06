@@ -89,6 +89,8 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     assignments = AssignmentSerializer( many=True, read_only=True )
     #assignments = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name = 'Assignment-detail' )
     project_docs = DocSerializer( many=True, read_only=True )
+    language_from_id = serializers.IntegerField( required = False )
+    language_to_id = serializers.IntegerField( required = False )
 
     class Meta:
         model = Project
