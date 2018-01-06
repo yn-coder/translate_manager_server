@@ -19,7 +19,7 @@ from django.views.generic import TemplateView
 
 from rest_framework import routers, serializers, viewsets
 
-from api.views import UserViewSet, ProjectViewSet, ProjectViewSet, NotificationViewSet, AssignmentViewSet, get_api_ver, get_my_profile, add_user2project, DocViewSet
+from api.views import LanguageViewSet, UserViewSet, ProjectViewSet, ProjectViewSet, NotificationViewSet, AssignmentViewSet, get_api_ver, get_my_profile, add_user2project, DocViewSet
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
@@ -27,6 +27,7 @@ router.register(r'doc', DocViewSet)
 router.register(r'projects', ProjectViewSet)
 router.register(r'my_notifications', NotificationViewSet)
 router.register(r'users', UserViewSet)
+router.register(r'languages', LanguageViewSet)
 router.register(r'assignments', AssignmentViewSet)
 
 from django.conf import settings

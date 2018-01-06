@@ -7,7 +7,19 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import authentication, permissions
 
-from translate_manager.models import Project, GetMemberedProjectList, Notification, GetUserNoticationsQ, Assignment, Doc
+from translate_manager.models import Language, Project, GetMemberedProjectList, Notification, GetUserNoticationsQ, Assignment, Doc
+
+class LanguageSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Language
+        fields = ( 'id', 'url', 'shortname', )
+
+# ViewSets define the view behavior.
+class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Language.objects.all()
+    serializer_class = LanguageSerializer
+    authentication_classes = (authentication.SessionAuthentication, authentication.BasicAuthentication)
+    permission_classes = (IsAuthenticated, )
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
