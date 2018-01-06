@@ -73,9 +73,11 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 class DocSerializer(serializers.HyperlinkedModelSerializer):
+    project_id = serializers.IntegerField( required = True )
+
     class Meta:
         model = Doc
-        fields = ( 'id', 'url', 'name', 'doc', 'project' )
+        fields = ( 'id', 'url', 'name', 'doc', 'project_id' )
 
 class DocViewSet(viewsets.ModelViewSet):
     queryset = Doc.objects.all()
